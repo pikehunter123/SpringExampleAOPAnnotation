@@ -6,6 +6,7 @@ public class Student {
 
    public void setAge(Integer age) {
       this.age = age;
+      System.out.println("!!!Setup Age : " + age+ " thread:"+Thread.currentThread().hashCode() );
    }
    public Integer getAge() {
        

@@ -1,5 +1,6 @@
 package com.tutorialspoint;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.annotation.Before;
@@ -15,7 +16,27 @@ public class Logging {
     *  all the methods available. So advice will be called
     *  for all the methods.
     */
-   @Pointcut("execution(* com.tutorialspoint.*.getAge(..))")
+ 
+       @Pointcut("execution(* com.tutorialspoint.*.setAge(..))  && args(yourAge)")
+   private void setPCA(int yourAge){}
+
+   @Before("setPCA(yourAge)")
+   public void beforeAdviceSet(JoinPoint joinPoint,int yourAge){
+      System.out.println("hijacked : " + joinPoint.getSignature().getName());
+      System.out.println("hijacked setting value: " + (int)(joinPoint.getArgs()[0]));
+      System.out.println("AOP before setup age ..."+yourAge+ " Logthread:"+Thread.currentThread().hashCode());
+   }
+ 
+    
+    @Pointcut("execution(* com.tutorialspoint.*.setName(..))  && args(yourString,..)")
+   private void setPC(String yourString){}
+
+   @Before("setPC(yourString)")
+   public void beforeAdviceSet(String yourString){
+      System.out.println("AOP before setup name ..."+yourString+ " Logthread:"+Thread.currentThread().hashCode());
+   }
+   
+    @Pointcut("execution(* com.tutorialspoint.*.getAge(..))")
    private void selectAll(){}
 
    /** 
@@ -42,7 +63,8 @@ public class Logging {
     */
    @AfterReturning(pointcut = "selectAll()", returning="retVal")
    public void afterReturningAdvice(Object retVal){
-      System.out.println("Returning:" + retVal.toString() + " Logthread:"+Thread.currentThread().hashCode());
+       String ret=retVal==null?"null":retVal.toString();
+      System.out.println("Returning:" + ret + " Logthread:"+Thread.currentThread().hashCode());
    }
 
    /**
